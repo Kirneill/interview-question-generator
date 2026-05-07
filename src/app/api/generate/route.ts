@@ -7,17 +7,26 @@ const openrouter = createOpenAI({
 });
 
 export async function POST(request: Request) {
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    const { jobTitle } = body;
+    body = await request.json();
+  } catch {
+    return Response.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
 
-    if (!jobTitle || typeof jobTitle !== "string" || jobTitle.trim() === "") {
-      return Response.json(
-        { error: "jobTitle is required and must be a non-empty string" },
-        { status: 400 }
-      );
-    }
+  const { jobTitle } = body;
 
+  if (!jobTitle || typeof jobTitle !== "string" || jobTitle.trim() === "") {
+    return Response.json(
+      { error: "jobTitle is required and must be a non-empty string" },
+      { status: 400 }
+    );
+  }
+
+  try {
     const { text } = await generateText({
       model: openrouter("google/gemini-2.0-flash-001"),
       system:
@@ -25,7 +34,8 @@ export async function POST(request: Request) {
       prompt: jobTitle.trim(),
     });
 
-    const questions: string[] = JSON.parse(text);
+    const cleaned = text.replace(/^```(?:json)?\s*|\s*```$/g, "").trim();
+    const questions: string[] = JSON.parse(cleaned);
 
     if (!Array.isArray(questions) || questions.length !== 3) {
       return Response.json(
@@ -36,13 +46,8 @@ export async function POST(request: Request) {
 
     return Response.json({ questions });
   } catch (error) {
-    if (error instanceof SyntaxError) {
-      return Response.json(
-        { error: "Invalid request body" },
-        { status: 400 }
-      );
-    }
-
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Generate error:", message);
     return Response.json(
       { error: "Failed to generate interview questions" },
       { status: 500 }
