@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Interview Question Generator
+
+A web app that generates role-specific interview questions using AI.
+
+## How It Works
+
+- Enter a job title (e.g., "Customer Success Manager")
+- The app calls Google Gemini to generate 3 tailored interview questions
+- Questions assess both technical competence and soft skills for the role
+
+## Tech Stack
+
+- Next.js 16 (App Router, TypeScript)
+- Vercel AI SDK with Google Gemini 2.0 Flash
+- Tailwind CSS v4
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- A Google Generative AI API key (free at https://ai.google.dev)
+
+### Setup
 
 ```bash
+git clone <repo-url>
+cd MeloAssociate
+npm install
+cp .env.local.example .env.local
+# Add your API key to .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Design Decisions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Gemini 2.0 Flash** -- Free tier, fast inference, good enough quality for structured Q&A generation
+- **Vercel AI SDK** -- Provider-agnostic abstraction; swapping to a different model is a one-line change
+- **Server-side API route** -- Keeps the API key off the client; the browser never sees it
+- **JSON-constrained prompting** -- System prompt enforces a pure JSON array response, validated server-side before returning to the client
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deploy to Vercel with one click -- the only config needed is setting `GOOGLE_GENERATIVE_AI_API_KEY` as an environment variable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Live Demo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Link to be added after deployment.
