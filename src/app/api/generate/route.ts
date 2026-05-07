@@ -1,5 +1,10 @@
-import { google } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
+
+const openrouter = createOpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +19,7 @@ export async function POST(request: Request) {
     }
 
     const { text } = await generateText({
-      model: google("gemini-2.0-flash"),
+      model: openrouter("google/gemini-2.0-flash-001"),
       system:
         "You are an expert interviewer. Given a job title, generate exactly 3 thoughtful interview questions specific to that role. Questions should assess both technical competence and soft skills relevant to the position. Return ONLY a valid JSON array of 3 strings. No markdown, no numbering, no explanation, no extra text.",
       prompt: jobTitle.trim(),
