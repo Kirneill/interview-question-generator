@@ -3,8 +3,12 @@
 import { useState } from "react";
 
 export default function Home() {
-  // TALK: "Simple React form with four pieces of state: the input value,
-  // the questions array, a loading boolean, and an error string."
+  // TALK:
+  // - Simple React form with four pieces of state
+  // - jobTitle: the text input value
+  // - questions: array of strings from the API
+  // - loading: boolean for the spinner
+  // - error: string for error messages
   const [jobTitle, setJobTitle] = useState("");
   const [questions, setQuestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -18,10 +22,12 @@ export default function Home() {
     setError("");
     setQuestions([]);
 
-    // TALK: "Submit handler POSTs to the API route. On success, it validates
-    // the response shape before setting state. On error, it surfaces the message.
-    // Loading state is managed in the finally block so it always clears —
-    // whether the call succeeds or fails."
+    // TALK:
+    // - Submit handler POSTs to the API route
+    // - On success: validates the response shape before setting state
+    // - On error: surfaces the message to the user
+    // - Loading state lives in the "finally" block so it always clears
+    // - Works whether the call succeeds or fails
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -64,9 +70,10 @@ export default function Home() {
             placeholder="e.g. Customer Success Manager"
             className="rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none transition-colors placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
           />
-          {/* TALK: "Loading spinner uses a CSS border trick with Tailwind's animate-spin.
-              The button text changes to 'Generating...' and disables during loading
-              so the user can't double-submit." */}
+          {/* TALK:
+              - Loading spinner uses a CSS border trick with Tailwind's animate-spin
+              - Button text changes to "Generating..." during loading
+              - Button disables so the user can't double-submit */}
           <button
             type="submit"
             disabled={loading || !jobTitle.trim()}
@@ -79,8 +86,10 @@ export default function Home() {
           </button>
         </form>
 
-        {/* TALK: "Error state shows a red alert box. The questions render as a
-            numbered list with a blue accent number." */}
+        {/* TALK:
+            - Error state shows a red alert box
+            - Questions render as a numbered list
+            - Blue accent number on the left */}
         {error && (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400">
             {error}
