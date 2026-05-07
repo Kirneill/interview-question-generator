@@ -28,6 +28,9 @@ export default function Home() {
       }
 
       const data = await res.json();
+      if (!Array.isArray(data.questions)) {
+        throw new Error(data.error ?? "Unexpected response format");
+      }
       setQuestions(data.questions);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

@@ -26,6 +26,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (jobTitle.trim().length > 200) {
+    return Response.json(
+      { error: "jobTitle must be under 200 characters" },
+      { status: 400 }
+    );
+  }
+
   try {
     const { text } = await generateText({
       model: openrouter("google/gemini-2.0-flash-001"),
@@ -35,14 +42,20 @@ export async function POST(request: Request) {
     });
 
     const cleaned = text.replace(/^```(?:json)?\s*|\s*```$/g, "").trim();
-    const questions: string[] = JSON.parse(cleaned);
+    const parsed: unknown = JSON.parse(cleaned);
 
-    if (!Array.isArray(questions) || questions.length !== 3) {
+    if (
+      !Array.isArray(parsed) ||
+      parsed.length !== 3 ||
+      !parsed.every((q): q is string => typeof q === "string" && q.trim().length > 0)
+    ) {
       return Response.json(
         { error: "Failed to generate valid interview questions" },
         { status: 500 }
       );
     }
+
+    const questions = parsed;
 
     return Response.json({ questions });
   } catch (error) {
